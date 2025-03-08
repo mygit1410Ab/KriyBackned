@@ -26,6 +26,16 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// Get all completed tasks for the logged-in user
+router.get("/completed", auth, async (req, res) => {
+  try {
+    const tasks = await Task.find({ user: req.userId, status: "completed" });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // Get a specific task
 router.get("/:id", auth, async (req, res) => {
   try {
