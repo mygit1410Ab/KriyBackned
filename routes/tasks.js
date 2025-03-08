@@ -68,12 +68,20 @@ router.put("/:id", auth, async (req, res) => {
   }
 });
 
-// Update task status to "completed"
+// Update task status dynamically
 router.patch("/:id/status", auth, async (req, res) => {
+  const { status } = req.body; // Allow dynamic status updates
+
   try {
+    // Validate the status
+    if (!["pending", "completed"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    // Update the task status
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id, user: req.userId },
-      { status: "completed" }, // Set status to "completed"
+      { status }, // Update status dynamically
       { new: true }
     );
     if (!task) {
