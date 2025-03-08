@@ -16,20 +16,10 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// Get all tasks for the logged-in user
+// Get all tasks for the logged-in user (both completed and pending)
 router.get("/", auth, async (req, res) => {
   try {
     const tasks = await Task.find({ user: req.userId });
-    res.json(tasks);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// Get all completed tasks for the logged-in user
-router.get("/completed", auth, async (req, res) => {
-  try {
-    const tasks = await Task.find({ user: req.userId, status: "completed" });
     res.json(tasks);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
@@ -68,14 +58,12 @@ router.put("/:id", auth, async (req, res) => {
   }
 });
 
-// Mark a task as completed or pending
+// Update task status to "completed"
 router.patch("/:id/status", auth, async (req, res) => {
-  const { status } = req.body;
-
   try {
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id, user: req.userId },
-      { status },
+      { status: "completed" }, // Set status to "completed"
       { new: true }
     );
     if (!task) {

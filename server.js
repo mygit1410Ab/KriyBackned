@@ -17,13 +17,17 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Health check route
+// Routes
+app.use("/auth", authRoutes);
+app.use("/tasks", taskRoutes);
+
+// Root route to check if the server is running
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Server is running successfully!" });
+  res.json({ message: "Server is running" });
 });
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/tasks", taskRoutes);
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-module.exports = app;
+module.exports = app; // Export for Vercel
