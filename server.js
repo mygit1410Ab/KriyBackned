@@ -17,10 +17,13 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Routes
-app.use("/auth", authRoutes);
-app.use("/tasks", taskRoutes);
+// Health check route
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Server is running successfully!" });
+});
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
+
+module.exports = app;
